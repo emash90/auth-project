@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Container, Row } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { signup } from './Api'
@@ -29,23 +29,29 @@ const Register = () => {
         console.log('submitting form...')
         console.log(firstName, lastName, email, password)
         const user = {firstName, lastName, username, role, email, password}
-        const response = await signup(user)
-        if(response.status === 200){
-            console.log('successful signup')
-            setMessage(response.data.message)
-            window.location.href = '/'
-        } else {
-            console.log('signup failed')
-            setMessage(response.data.message)
+        try {
+          const response = await signup(user)
+          if(response.status === 200){
+              console.log('successful signup')
+              setMessage(response.data.message)
+              window.location.href = '/login'
+          }
+        } catch (error) {
+          console.log('signup failed')
+          setMessage(error.response.data.message)
         }
     }
 
 
   return (
     <>
-    <h2>Register</h2>
+    <Container className="mt-2">
+      <Row className="justify-content-md-center">
+    <h2 className="text-center">Register</h2>
     {message && <div className="alert alert-warning">{message}</div>}
-      <Form>
+      </Row>
+      <Row className="justify-content-md-center">
+      <Form className="col-md-8">
         {/* name */}
         <Form.Group controlId="formBasicName">
           <Form.Label>First Name</Form.Label>
@@ -79,7 +85,7 @@ const Register = () => {
         </Form.Group>
 
         {/* submit button */}
-        <Button variant="primary" type="submit" onClick={(e) => submitForm(e)}>
+        <Button className='mt-3' variant="primary" type="submit" onClick={(e) => submitForm(e)}>
           Submit
         </Button>
 
@@ -88,6 +94,8 @@ const Register = () => {
             Already have an account? <Link to="/login">Login</Link>
         </Form.Text>
       </Form>
+      </Row>
+    </Container>
     </>
   )
 }
