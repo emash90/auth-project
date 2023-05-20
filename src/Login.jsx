@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Container, Row } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { login } from './Api'
 
@@ -19,38 +19,46 @@ const Login = () => {
 
     const submitForm = async (e) => {
         e.preventDefault()
-        console.log('submitting form...')
+        if(!email || !password){
+            setMessage('Please fill in all fields')
+            return
+        }
         const user = {email, password}
-        const response = await login(user)
-        if(response.status === 200){
-            console.log(response.data)
-            setMessage(response.data.message)
-            //window.location.href = '/'
-        } else {
-            console.log('login failed')
-            console.log(response.data)
-            setMessage(response.data.message)
+        try {
+          const response = await login(user)
+          if(response.status === 200){
+              console.log('successful login')
+              setMessage(response.data.message)
+              window.location.href = '/'
+          }
+        } catch (error) {
+          console.log('login failed')
+          setMessage(error.response.data.message)
         }
     }
   return (
     <>
-    <h2>Login</h2>
-    {message && <div className="alert alert-warning">{message}</div>}
-      <Form>
+     <Container className="mt-5">
+      <Row className="justify-content-md-center">
+      <h2 className="text-center">Login</h2>
+      {message && <div className="alert alert-warning col-md-6">{message}</div>}
+      </Row>
+      <Row className="justify-content-md-center">
+      <Form className="col-md-6">
         {/* email */}
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" name='email' value={email} onChange={handleChange} placeholder="Enter email" />
+          <Form.Control required type="email" name='email' value={email} onChange={handleChange} placeholder="Enter email" />
         </Form.Group>
 
         {/* password */}
         <Form.Group controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" name='password' value={password} onChange={handleChange} placeholder="Password" />
+          <Form.Control required type="password" name='password' value={password} onChange={handleChange} placeholder="Password" />
         </Form.Group>
 
         {/* submit button */}
-        <Button variant="primary" onClick={(e) => submitForm(e) } type="submit">
+        <Button className='mt-3' variant="primary" onClick={(e) => submitForm(e) } type="submit">
           Submit
         </Button>
 
@@ -59,6 +67,8 @@ const Login = () => {
             Don't have an account? <Link to="/register">Register here</Link>
         </Form.Text>
       </Form>
+      </Row>
+      </Container>
     </>
   )
 }
