@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { Form, Button, Container, Row } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { login } from './Api'
 
-const Login = () => {
+const Login = ({ onLogin }) => {
+    const navigate = useNavigate()
     const user_details = {
         email: '',
         password: ''
@@ -29,10 +30,21 @@ const Login = () => {
           if(response.status === 200){
               console.log('successful login')
               setMessage(response.data.message)
-              window.location.href = '/'
+              //set cookie
+              //document.cookie = `token=${response.data.token}; path=/;`
+              // document.cookie = `user=${JSON.stringify(response.data.user)}; path=/;`
+              // console.log('cookie set', document.cookie)
+              //sessionStorage.setItem('token', response.data.token)
+              sessionStorage.setItem('user', JSON.stringify(response.data.user))
+              console.log('sessionStorage set', sessionStorage)
+              //set user in parent component
+              const user = JSON.parse(sessionStorage.getItem('user'))
+              onLogin(user)
+              navigate('/')
           }
         } catch (error) {
           console.log('login failed')
+          console.log(error)
           setMessage(error.response.data.message)
         }
     }

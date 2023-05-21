@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Button, Container, Row } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { signup } from './Api'
 
 const Register = () => {
